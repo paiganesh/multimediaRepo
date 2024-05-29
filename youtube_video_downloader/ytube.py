@@ -1,4 +1,4 @@
-from pytube import Playlist, YouTube
+from pytube import Playlist, YouTube as YT
 import os
 
 class YouTube:
@@ -63,17 +63,18 @@ class YouTube:
                     return
                 print('Downloading ' + video_url)
                 
-            video=YouTube(video_url, use_oauth=False, allow_oauth_cache=True)
+            video = YT(video_url, use_oauth=False, allow_oauth_cache=True)
             print("Title: " + video.title)
-            stream=None
+            stream = None
             try:
                 if resolution != None:
                     stream = video.streams.filter(res=resolution).first()
                     if stream == None:
                         print(f"Video for selected resolution {resolution} not found. Trying for other available resolutions.")
                 
-                resolution = resolution_values[0]
-                stream = video.streams.filter(res=resolution).first()
+                if stream == None:
+                    resolution = resolution_values[0]
+                    stream = video.streams.filter(res=resolution).first()
                 if stream == None:
                     resolution = resolution_values[1]
                     stream = video.streams.filter(res=resolution).first()
@@ -87,7 +88,7 @@ class YouTube:
                 if stream == None:
                     print('No suitable resolution found.')
                 else:
-                    print('Download Resolution:', resolution)
+                    print('Download Resolution:', resolution, "\nDownloading...", end=" ")
                     stream.download(output_path=dest_dir, skip_existing=True, filename_prefix=prefix, max_retries=1)
                     print('Done.')
             except Exception as e:
@@ -95,7 +96,7 @@ class YouTube:
                 return (video_url, video.title, prefix)
     
     
-    def download_videos(self, utube_URL:str, dest_dir:str, playlist_autonumber:bool=False, resolution:str='720p'):
+    def download_videos(self, utube_URL:str, dest_dir:str, playlist_autonumber:bool=False, resolution='720p'):
         """
         Downloads YouTube Videos or Playlist videos from *utube_URL* into the *dest_dir* directory.
 
@@ -117,7 +118,11 @@ class YouTube:
         """
         def is_connected():
           import socket
+          # hostname = "one.one.one.one"
           try:
+            # host = socket.gethostbyname(hostname)
+            # s = socket.create_connection((host, 80), 2)
+            # s.close()
             socket.create_connection((socket.gethostbyname("one.one.one.one"), 80), 2).close()
             return True
           except Exception:
@@ -132,9 +137,8 @@ class YouTube:
         video_pattern = r"(?:v=|\/)([0-9A-Za-z_-]{11}).*"
         video_regex = re.compile(video_pattern)
         if video_regex.search(utube_URL):
-            print(f"[{utube_URL}] is a Video URL")
+            print(f"[{utube_URL}] is a Video URL\n")
             self.__download_video(utube_URL, dest_dir=dest_dir, resolution=resolution)
         else:
-            print(f"[{utube_URL}] is a Playlist URL")
+            print(f"[{utube_URL}] is a Playlist URL\n")
             self.__download_playlist(utube_URL, dest_dir=dest_dir, playlist_autonumber=playlist_autonumber, resolution=resolution)
-
