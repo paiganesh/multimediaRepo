@@ -95,7 +95,7 @@ class YouTube:
                 return (video_url, video.title, prefix)
     
     
-    def download_videos(self, utube_URL:str, dest_dir:str, playlist_autonumber:bool=False, resolution='720p'):
+    def download_videos(self, utube_URL:str, dest_dir:str, playlist_autonumber:bool=False, resolution:str='720p'):
         """
         Downloads YouTube Videos or Playlist videos from *utube_URL* into the *dest_dir* directory.
 
@@ -117,11 +117,8 @@ class YouTube:
         """
         def is_connected():
           import socket
-          hostname = "one.one.one.one"
           try:
-            host = socket.gethostbyname(hostname)
-            s = socket.create_connection((host, 80), 2)
-            s.close()
+            socket.create_connection((socket.gethostbyname("one.one.one.one"), 80), 2).close()
             return True
           except Exception:
              pass
