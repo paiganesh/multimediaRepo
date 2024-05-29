@@ -118,11 +118,7 @@ class YouTube:
         """
         def is_connected():
           import socket
-          # hostname = "one.one.one.one"
           try:
-            # host = socket.gethostbyname(hostname)
-            # s = socket.create_connection((host, 80), 2)
-            # s.close()
             socket.create_connection((socket.gethostbyname("one.one.one.one"), 80), 2).close()
             return True
           except Exception:
