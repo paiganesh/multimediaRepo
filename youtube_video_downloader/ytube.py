@@ -36,14 +36,14 @@ class YouTube:
                     print(f'{i}. {video[0]}  ==>  {video[2]}. {video[1]}')
             print("="*50)
             
+        failure_log2 = []
         if len(failure_log) > 0:
             print_failure_log(failure_log)
             
-        failure_log2 = []
-        print("\n--- Retrying failed downloads... ---")
-        for video_url, title, prefix in failure_log:
-            state = self.__download_video(video_url, dest_dir, printmsg=False, prefix=prefix, resolution=resolution)
-            if state != None: failure_log2.append(state)
+            print("\n--- Retrying failed downloads... ---")
+            for video_url, title, prefix in failure_log:
+                state = self.__download_video(video_url, dest_dir, printmsg=False, prefix=prefix, resolution=resolution)
+                if state != None: failure_log2.append(state)
         
         if len(failure_log2) == 0:
             print("All downloads completed.")
@@ -68,22 +68,22 @@ class YouTube:
             stream = None
             try:
                 if resolution != None:
-                    stream = video.streams.filter(res=resolution).first()
+                    stream = video.streams.filter(progressive=True, res=resolution).first()
                     if stream == None:
                         print(f"Video for selected resolution {resolution} not found. Trying for other available resolutions.")
                 
                 if stream == None:
                     resolution = resolution_values[0]
-                    stream = video.streams.filter(res=resolution).first()
+                    stream = video.streams.filter(progressive=True, res=resolution).first()
                 if stream == None:
                     resolution = resolution_values[1]
-                    stream = video.streams.filter(res=resolution).first()
+                    stream = video.streams.filter(progressive=True, res=resolution).first()
                 if stream == None:
                     resolution = resolution_values[2]
-                    stream = video.streams.filter(res=resolution).first()
+                    stream = video.streams.filter(progressive=True, res=resolution).first()
                 if stream == None:
                     resolution = resolution_values[3]
-                    stream = video.streams.filter(res=resolution).first()
+                    stream = video.streams.filter(progressive=True, res=resolution).first()
                 
                 if stream == None:
                     print('No suitable resolution found.')
